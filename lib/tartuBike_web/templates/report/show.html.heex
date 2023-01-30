@@ -1,0 +1,22 @@
+<h1>Show Report</h1>
+
+<ul>
+
+  <li>
+    <strong>Bike id:</strong>
+    <%= @report.bike_id %>
+  </li>
+
+  <li>
+    <strong>Title:</strong>
+    <%= @report.title %>
+  </li>
+
+  <li>
+    <strong>Issue:</strong>
+    <%= @report.issue %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.report_path(@conn, :edit, @report) %></span> |

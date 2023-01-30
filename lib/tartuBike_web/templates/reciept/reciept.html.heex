@@ -1,0 +1,28 @@
+<h2>Membership Purchase Invoice</h2>
+
+<table>
+  <thead>
+   
+  </thead>
+  <tbody>
+<%= for recieptinvoice <- @receipt_invoice do %>
+
+ <div>Invoice date: <%= recieptinvoice.inserted_at%> </div>
+  <div>
+      Bill To: <%= recieptinvoice.user.name%> <br>
+      E-mail: <%= recieptinvoice.user.email%>
+  </div>
+
+    <tr>
+      <td>Invoice Id</td> <td><%= recieptinvoice.id %></td>
+     </tr>
+     <tr>
+      <td>Membership Type</td> <td><%= recieptinvoice.membershiptype.description %></td>
+      </tr>
+      <tr>
+      <td>Amount</td> <td><%= recieptinvoice.membershiptype.amount %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+

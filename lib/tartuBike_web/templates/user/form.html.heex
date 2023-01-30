@@ -1,0 +1,41 @@
+<.form let={f} for={@changeset} action={@action}>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= label f, :name %>
+  <%= text_input f, :name, id: "name" %>
+  <%= error_tag f, :name %>
+
+  <%= label f, :username %>
+  <%= text_input f, :username, id: "username" %>
+  <%= error_tag f, :username %>
+
+  <%= label f, :password %>
+  <%= text_input f, :password, type: "password", id: "password" %>
+  <%= error_tag f, :password %>
+
+  <%= label f, :dateofbirth %>
+  <%= date_input f, :dateofbirth, id: "dob", min: "1920-01-01", max: "2015-12-31" %>
+  <%= error_tag f, :dateofbirth %>
+
+  <%= label f, :email %>
+  <%= email_input f, :email, id: "email" %>
+  <%= error_tag f, :email %>
+
+  <hr/>
+  <p>Payment method</p>
+  <%= label f, :creditcard %>
+  <%= text_input f, :creditcard, id: "credit_card_number", maxlength: "16" %>
+  <%= error_tag f, :creditcard %>
+
+  <%= label f, :tartubusnumber %>
+  <%= text_input f, :tartubusnumber, id: "bus_card_number", maxlength: "13"  %>
+  <%= error_tag f, :tartubusnumber %>
+
+  <div>
+    <%= submit "Save", id: "new_user_submit" %>
+  </div>
+</.form>

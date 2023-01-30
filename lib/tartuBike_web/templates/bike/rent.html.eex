@@ -1,0 +1,18 @@
+<h2>Rent the bike</h2>
+
+<%= if @ride != [] do %>
+    <p class="alert alert-danger" role="alert">Please return the bike before renting a new one</p>
+
+    <%= for ride <- @ride do %>
+        <p> Bike id: <%= ride.bike_id %> has been rented since <%= ride.started_at %> and not yet return. </p>
+        <%= link "Return", to: Routes.bike_path(@conn, :end_ride, id: ride.bike_id), class: "button" %>
+    <% end %>
+<% else %>
+    <%= form_for @conn, Routes.bike_path(@conn, :rentit) , fn bike -> %>
+        <div class="form-group">
+            <label>Bike id: </label>
+            <%= number_input bike, :id, class: "form-control", min: "0", required: "required" %>
+            <%= submit "Rent", id: "rent-submit", class: "btn btn-primary" %>
+        </div>
+    <% end %>
+<% end %>

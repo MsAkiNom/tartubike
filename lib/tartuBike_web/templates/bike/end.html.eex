@@ -1,0 +1,10 @@
+<h2>End the ride</h2>
+<%= form_for @conn, Routes.bike_path(@conn, :endit) , fn bike -> %>
+    <div class="form-group">
+        <label>Bike id: </label>
+        <%= number_input bike, :id, class: "form-control", min: "0", required: "required" %>
+        <label>Station id: </label>
+        <%= number_input bike, :dock_id, class: "form-control", min: "0", required: "required" %>
+        <%= submit "End the ride", id: "end-submit", class: "btn btn-primary" %>
+    </div>
+<% end %>

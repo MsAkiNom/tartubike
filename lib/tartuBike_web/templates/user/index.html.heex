@@ -1,0 +1,36 @@
+<h1>Listing Users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>Dateofbirth</th>
+      <th>Email</th>
+      <th>Creditcard</th>
+      <th>Tartubusnumber</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.name %></td>
+      <td><%= user.username %></td>
+      <td><%= user.dateofbirth %></td>
+      <td><%= user.email %></td>
+      <td><%= user.creditcard %></td>
+      <td><%= user.tartubusnumber %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.user_path(@conn, :show, user) %></span>
+        <span><%= link "Edit", to: Routes.user_path(@conn, :edit, user) %></span>
+        
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+

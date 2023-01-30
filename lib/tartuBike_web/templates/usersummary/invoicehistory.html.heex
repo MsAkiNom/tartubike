@@ -1,0 +1,26 @@
+<h1>Invoice History</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Invoice ID</th>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Invoice Date</th>
+      <%# <th>Status</th> %>
+    </tr>
+  </thead>
+  <tbody>
+<%= for invoice_history <- @invoice do %>
+    <tr>
+      
+      <td><%= invoice_history.id %></td>
+      <td><%= invoice_history.description %></td>
+      <td><%= invoice_history.amount %></td>
+      <td><%= invoice_history.invoice_date %></td>
+      <td><%= #invoice_history.status %></td>
+       
+    </tr>
+<% end %>
+  </tbody>
+</table>

@@ -1,0 +1,6 @@
+<h1>New Membership</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.membership_path(@conn, :create)) %>
+
+
+<span><%= link "View my summary", to: Routes.usersummary_path(@conn, :usersummary) %></span>

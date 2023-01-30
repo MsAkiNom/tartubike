@@ -1,0 +1,29 @@
+<section class="phx-hero">
+  <h1>Tartu Bike Sharing</h1>
+  <p></p>
+</section>
+
+<section>
+<p>Start renting a bike with simple steps:</p>
+  <h2>Step 1: Create an Account</h2>
+  <%= link "Register >", to: "/users/new", class: "button button-outline" %>
+  <hr>
+  <h2>Step 2: Buy a Membership</h2>
+  <%= link "Membership Plan >", to: "memberships/new", class: "button button-outline" %>
+  <hr>
+  <h2>Step 3: Seach for a Station</h2>
+  <%= link "Stations Map >", to: "/search", class: "button button-outline" %>
+  <hr>
+  <h2>Step 4: Get a Bike</h2>
+  <br/><%= link "Book >", to: "/book", class: "button button-outline" %> <%= link "Unlock >", to: "/rent", class: "button button-outline" %>
+  <br/><%= link "Return >", to: "/end", class: "button button-outline" %>
+  <hr>
+<p>More information:</p>
+<%= link "Report issue >", to: "/reports/new", class: "button button-outline" %>
+
+</section>
+<hr>
+<section>
+  <h2>Visit popular Tartu's attraction routes</h2>
+  <%= link "Popular routes >", to: "/popular", class: "button" %>
+</section>

@@ -1,0 +1,42 @@
+<h1>User Usage</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bike Id</th>
+      <th>CO2 saved</th>
+      <th>Calories burned</th>
+      <th>Distance (km)</th>
+      <th>Time (minute)</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user_usage <- @user_usage do %>
+    <tr>
+      <td><%= user_usage.bike_id %></td>
+      <td>
+        <%= if not is_nil(user_usage.end_dock) do %>
+            <%= DateTime.diff(user_usage.ended_at, user_usage.started_at)*(22) %>
+       <% end %>
+       </td>
+       <td>
+        <%= if not is_nil(user_usage.end_dock) do %>
+            <%= DateTime.diff(user_usage.ended_at, user_usage.started_at)*(0.55) %>
+       <% end %>
+       </td>
+
+      <td><%= user_usage.distance %></td>
+      <td>
+        <%= if not is_nil(user_usage.end_dock) do %>
+            <%= DateTime.diff(user_usage.ended_at, user_usage.started_at) / (60) |> Float.round(2)%>
+        <% end %>
+      </td>
+      </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h3>Total kilometer ridden:</h3>
+<%= if not is_nil(@total_kilo) do %>
+  <%= @total_kilo |> Decimal.round(4) %> kilometers
+<% end %>

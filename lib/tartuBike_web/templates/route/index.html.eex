@@ -1,0 +1,67 @@
+
+<style>
+
+.route-container{
+	box-shadow: 0 15px 30px 1px grey;
+	background: rgba(255, 255, 255, 0.90);
+    border-radius: 25px;
+    margin-bottom: 50px;
+	height: 350px;
+	width: 700px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.product-details{
+    padding: 30px;
+    display: inline-block;
+    text-align: center;
+    min-width: 50%;
+}
+
+.product-image {
+	display: inline-block;
+	overflow: hidden;
+	height: 100%;
+  border-radius: 0 25px 25px 0 ;
+  max-width: 50%;
+}
+
+.product-info{
+    list-style: none;
+}
+
+.product-details .btn{
+    position: absolute;
+    bottom: 10%;
+    left: 20%;
+}
+
+.route-container img{height: 100%;}
+
+</style>
+<h2> Popular attractions </h2>
+<div>
+<%= for route <- @routes do %>
+    <div class="route-container">
+
+	<div class="product-details">
+	    <h2><%= route.name %></h2>
+	    <ul class="product-info">
+        <li>Start dock: <%= route.start_dock.name %></li>
+        <li>End dock: <%= route.end_dock.name %></li>
+        </ul>
+
+
+        <%= link "Start", to: Routes.search_path(@conn, :showBikes, route.start_dock.id), class: "button" %>
+
+    </div>
+
+    <div class="product-image">
+    <%= img_tag(Routes.static_path(@conn, "/images/" <> route.img)) %>
+    </div>
+
+</div>
+<% end %>
+</div>

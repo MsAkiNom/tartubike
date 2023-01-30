@@ -1,0 +1,23 @@
+<%= form_for @conn, Routes.paymentservice_path(@conn, :issue) , fn f -> %>
+    <div class="form-group">
+    Please report a technical problem to avoid charged from returning delay or bike missing fee of
+    <h2 style="color:red">€ <%=f.params["charged"]%></h2>
+        <label>Issue Reference number (X-00000000000): </label>
+        <%= text_input f, :ref, class: "form-control", required: "required" %>
+        <%= hidden_input f, :bike_id, class: "form-control", required: "required" %>
+        <%= hidden_input f, :fee, class: "form-control", required: "required" %>
+        <%= hidden_input f, :charged, class: "form-control" %>
+        <%= submit "Submit", id: "report-id-submit", class: "btn btn-primary" %>
+    </div>
+<% end %>
+<%= link "Report issue >", to: "/reports/new", class: "button button-outline", target: "_blank" %>
+<hr/>
+<%= form_for @conn, Routes.paymentservice_path(@conn, :issuePay) , fn f -> %>
+    <div class="form-group">
+        <%= hidden_input f, :fee, class: "form-control" %>
+        <%= hidden_input f, :charged, class: "form-control" %>
+        <p>I am willing to pay fee</p>
+        <%= submit "pay € #{f.params["charged"]}", id: "fee-submit", class: "btn btn-primary alert-danger" %>
+    </div>
+<% end %>
+<br/>

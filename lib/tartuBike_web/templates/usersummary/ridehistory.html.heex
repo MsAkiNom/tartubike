@@ -1,0 +1,35 @@
+<h1>Ride History</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Started at</th>
+      <th>Ended at</th>
+      <th>Bike Id</th>
+      <th>Duration</th>
+      <th>Start form</th>
+      <th>End dock</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for ride_history <- @ride_history do %>
+    <tr>
+      <td><%= ride_history.started_at %></td>
+      <td><%= ride_history.ended_at %></td>
+      <td><%= ride_history.bike_id %></td>
+      <%= if ride_history.ended_at != nil do %>
+      <td><%= DateTime.diff(ride_history.ended_at, ride_history.started_at)/(60) %> Minutes </td>
+      <% else %><td> Ride not yet ended </td>
+      <% end %>
+      <td><%= ride_history.start_dock.name %></td>
+       <td>
+        <%= if not is_nil(ride_history.end_dock) do %>
+            <%= ride_history.end_dock.name %>
+       <% end %>
+      
+       </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

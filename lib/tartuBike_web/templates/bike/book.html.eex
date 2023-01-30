@@ -1,0 +1,9 @@
+<h2>Book the bike</h2>
+
+<%= form_for @conn, Routes.bike_path(@conn, :bookit) , fn bike -> %>
+    <div class="form-group">
+        <label>Bike id: </label>
+        <%= number_input bike, :id, class: "form-control", min: "0", required: "required" %>
+        <%= submit "Book", id: "book-submit", class: "btn btn-primary" %>
+    </div>
+<% end %>

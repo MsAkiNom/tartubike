@@ -1,0 +1,195 @@
+<style>
+    .MicrosoftMap .Infobox{
+        min-width: 200px;
+    }
+
+    .container{
+        max-width: 100%
+    }
+</style>
+
+<script type="text/javascript">
+    var map = null;
+    var currLat = null;
+    var currLon = null;
+
+    function getMap()
+    {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            currLat = position.coords.latitude;
+            currLon = position.coords.longitude;
+            console.log(currLat +", "+ currLon);
+            document.getElementById('currLat').value = currLat;
+            document.getElementById('currLon').value = currLon;
+        });
+
+        var tartuBikeBounds = Microsoft.Maps.LocationRect.fromEdges(58.5, 26.5, 58.28, 26.9);
+        map = new Microsoft.Maps.Map('#myMap', {
+            maxBounds: tartuBikeBounds,
+            credentials: 'ApRhylYUwkWqmSjvQIejPoy5BEdOdsJw8Jdx_4kYeCSr4eRbMaLuGZzqIz3v27ts'
+        });
+
+        //Create an infobox at the center of the map but don't show it.
+        infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+            visible: false
+        });
+
+        //Assign the infobox to a map instance.
+        infobox.setMap(map);
+
+    <%= case @location do %>
+        <% %{lat: _, lon: _} -> %>
+            let lat = parseFloat(document.getElementById("lat").value)
+            let lon = parseFloat(document.getElementById("lon").value)
+            var sel_loc = new Microsoft.Maps.Location(lat, lon);
+            
+            //Add a pushpin at the select location.
+            var sel_pin = new Microsoft.Maps.Pushpin(sel_loc, {
+                title: 'Selected location'
+            });
+            map.entities.push(sel_pin);
+            console.log(sel_pin)
+
+            //Center the map on the select location.
+            map.setView({ center: sel_loc, zoom: 15 });
+        <% _ -> %>
+            //Not really accurate sometime
+            //Request the user's location
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var user_location = new Microsoft.Maps.Location(
+                    position.coords.latitude,
+                    position.coords.longitude);
+
+                //Add a pushpin at the user's location.
+                var pin = new Microsoft.Maps.Pushpin(user_location, {
+                    color: 'grey',
+                    title: 'Your location'
+                });
+                map.entities.push(pin);
+                map.setView({ center: user_location, zoom: 15 });
+            });
+    <% end %>
+
+        //Stations
+        //test data
+        //var station_AHHAA = new Microsoft.Maps.Location(
+        //        58.37690838,
+        //        26.73315958);
+        //var station_Aleksandri = new Microsoft.Maps.Location(
+        //        58.37615576,
+        //        26.72882871);
+        //var stations = [station_AHHAA, station_Aleksandri];
+
+        var stations = [];
+
+        <%= for dock <- @docks do %>
+            var station = {id: "<%= dock.station.id %>", name: "<%= dock.station.name %>", docks: <%= dock.station.capacity %>, location: new Microsoft.Maps.Location(<%= dock.station.latitude %>, <%= dock.station.longitude %>),
+            classicBikes: "<%= dock.classic %>", electricBikes: "<%= dock.electric %>"};
+            stations.push(station);
+        <% end %>
+
+        for (var i = 0; i < stations.length; i++) {
+            //Todo: would be cool if pin color changing
+            //Red - no bike available
+            //Green - There are bike availables
+            var available_bikes = parseInt(stations[i].classicBikes) + parseInt(stations[i].electricBikes);
+
+            var pin = new Microsoft.Maps.Pushpin(stations[i].location, {
+                color: 'blue',
+                text: `${available_bikes}`,
+            });
+
+            //Store some metadata with the pushpin.
+            pin.metadata = {
+                title: `ID ${stations[i].id}`,
+                description: `<strong>${stations[i].name}</strong>
+                <br/>Classic bikes: ${stations[i].classicBikes}
+                <br/>Electric bikes: ${stations[i].electricBikes}
+                <br/>Open docks: ${stations[i].docks - available_bikes}
+                <br/>Total docks: ${stations[i].docks}
+                `
+            };
+
+            //Add a click event handler to the pushpin.
+            Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+
+            //Add pushpin to the map.
+            map.entities.push(pin);
+        }
+      }
+
+      function pushpinClicked(e) {
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                description: e.target.metadata.description,
+                visible: true
+            });
+        }
+    }
+</script>
+<script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap' async defer></script>
+
+
+<body onload="getMap();">
+    <%= case @location do %>
+        <% %{lat: _, lon: _} -> %>
+            <%=tag(:input, type: "text", id: "lat", hidden: true, value: @location.lat) %>
+            <%=tag(:input, type: "text", id: "lon", hidden: true, value: @location.lon) %>
+        <% _ -> %>
+    <% end %>
+    <h1>Station map</h1>
+    <%= form_for @conn, Routes.search_path(@conn, :nearby) , fn location -> %>
+        <div class="form-group">
+            <%= text_input location, :location, class: "form-control" %>
+            <%= submit "Search", class: "btn btn-primary" %>
+        </div>
+    <% end %>
+    <%= form_for @conn, Routes.search_path(@conn, :nearme) , fn location -> %>
+        <div class="form-group">
+            <%= hidden_input location, :currLat %>
+            <%= hidden_input location, :currLon %>
+            <%= submit "Use my location", class: "btn btn-primary", id: "nearme-submit" %>
+        </div>
+    <% end %>
+    <p>A map below shows the number of available bikes at the stations. Click on the pin to view more information</p>
+    <div id='myMap' style="position:relative; width:100%; height:900px;"></div>
+
+    <br/>
+    <%= if not is_nil(@nearest_distance) do %>
+    <h3> The distance from your location to the closest dock: <b><%= @nearest_distance %></b> </h3>
+    <% end %>
+    <br/>
+    <h1>Station details</h1>
+
+    <table class="table">
+    <thead>
+        <tr>
+        <th>Station ID</th>
+        <th>Name</th>
+        <th>Open Docks</th>
+        <th>Classic Bike</th>
+        <th>Electric Bike</th>
+        <th>Location</th>
+        <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    <%= for dock <- @docks do %>
+        <tr>
+        <td><%= dock.station.id %></td>
+        <td><%= dock.station.name %></td>
+        <td><%= dock.station.capacity - (dock.classic + dock.electric) %> / <%= dock.station.capacity %></td>
+        <td><%= dock.classic %></td>
+        <td><%= dock.electric %></td>
+        <td><%= dock.station.latitude %>,<%= dock.station.longitude %></td>
+        <td><%= link "View bikes", to: Routes.search_path(@conn, :showBikes, dock.station.id), class: "button" %></td>
+        </tr>
+    <% end %>
+    </tbody>
+    </table>
+
+</body>

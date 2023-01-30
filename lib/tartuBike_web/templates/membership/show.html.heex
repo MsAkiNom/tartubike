@@ -1,0 +1,14 @@
+<h1>Show Membership</h1>
+
+<ul>
+
+  <li>
+    <strong>Desc:</strong>
+    <%= @membership.desc %>
+    
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.membership_path(@conn, :edit, @membership) %></span> |
+
